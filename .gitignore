@@ -5,3 +5,4 @@
 # Packet Tracer autosave / temp files
 *.pkt.bak
 *~
+packet-tracer/

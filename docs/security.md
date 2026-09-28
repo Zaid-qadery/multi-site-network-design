@@ -14,7 +14,7 @@ For SSH to work at all, the router needs a hostname, a domain name (`ip domain-n
 - The admin account uses `secret` rather than `password`, so it's hashed too
 - `service password-encryption` hides any other passwords in the config
 
-In the screenshot and the configs I've left the start of each hash visible and covered the rest. `$1$` means it's an MD5-based hash (Cisco type 5), and `mERr` is the salt. The passwords in this lab aren't used anywhere else, and the .pkt file has the full config anyway, but I don't like publishing hashes. Weak passwords can be cracked from them offline, so I've kept to the habit here.
+In the screenshot and the configs I've left the start of each hash visible and covered the rest. `$1$` means it's an MD5-based hash (Cisco type 5), and `mERr` is the salt. The passwords in this lab aren't used anywhere else, but I don't like publishing hashes. Weak passwords can be cracked from them offline, so I've kept to the habit here.
 
 ![Hashed credentials, partly covered](../images/hashed-credentials.png)
 

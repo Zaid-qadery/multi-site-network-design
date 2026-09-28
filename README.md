@@ -87,7 +87,6 @@ Some other things I'd change in a real network: port security and DHCP snooping 
 
 ## Files
 
-- `packet-tracer/`: the .pkt file (opens in Cisco Packet Tracer 8.2.2 or newer)
 - `configs/`: running configs from every router and switch
 - `docs/`: IP plan, security setup and tests
 - `images/`: screenshots
