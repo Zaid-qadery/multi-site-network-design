@@ -1,0 +1,222 @@
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname R_MANCHESTER
+!
+!
+!
+enable secret 5 $1$mERr$juYM[REDACTED]
+!
+!
+ip dhcp excluded-address 10.20.1.1 10.20.1.20
+ip dhcp excluded-address 10.20.1.65 10.20.1.80
+ip dhcp excluded-address 10.20.2.1 10.20.2.20
+ip dhcp excluded-address 10.20.2.65 10.20.2.80
+ip dhcp excluded-address 10.20.3.1 10.20.3.20
+ip dhcp excluded-address 10.20.3.65 10.20.3.80
+ip dhcp excluded-address 10.20.99.1 10.20.99.20
+ip dhcp excluded-address 10.20.220.1 10.20.220.20
+ip dhcp excluded-address 10.20.1.129 10.20.1.140
+ip dhcp excluded-address 10.20.2.129 10.20.2.140
+!
+ip dhcp pool MAN1_WIRED
+ network 10.20.1.0 255.255.255.192
+ default-router 10.20.1.1
+ dns-server 10.20.220.10
+ domain-name citynet.local
+ip dhcp pool MAN1_WIFI
+ network 10.20.1.64 255.255.255.192
+ default-router 10.20.1.65
+ dns-server 10.20.220.10
+ domain-name citynet.local
+ip dhcp pool MAN2_WIRED
+ network 10.20.2.0 255.255.255.192
+ default-router 10.20.2.1
+ dns-server 10.20.220.10
+ domain-name citynet.local
+ip dhcp pool MAN2_WIFI
+ network 10.20.2.64 255.255.255.192
+ default-router 10.20.2.65
+ dns-server 10.20.220.10
+ domain-name citynet.local
+ip dhcp pool FACT_WIRED
+ network 10.20.3.0 255.255.255.192
+ default-router 10.20.3.1
+ dns-server 10.20.220.10
+ domain-name citynet.local
+ip dhcp pool FACT_WIFI
+ network 10.20.3.64 255.255.255.192
+ default-router 10.20.3.65
+ dns-server 10.20.220.10
+ domain-name citynet.local
+ip dhcp pool MAN1_GUEST
+ network 10.20.1.128 255.255.255.192
+ default-router 10.20.1.129
+ dns-server 10.20.220.10
+ domain-name citynet.local
+ip dhcp pool MAN2_GUEST
+ network 10.20.2.128 255.255.255.192
+ default-router 10.20.2.129
+ dns-server 10.20.220.10
+ domain-name citynet.local
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username admin privilege 15 secret 5 $1$mERr$v8YX[REDACTED]
+!
+!
+license udi pid CISCO2901/K9 sn FTX1524E1V4-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+no ip domain-lookup
+ip domain-name citynet.local
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0.70
+ description MAN1_WIRED_GW
+ encapsulation dot1Q 70
+ ip address 10.20.1.1 255.255.255.192
+!
+interface GigabitEthernet0/0.80
+ description MAN1_WIFI_GW
+ encapsulation dot1Q 80
+ ip address 10.20.1.65 255.255.255.192
+!
+interface GigabitEthernet0/0.85
+ description MAN1_GUEST_GW
+ encapsulation dot1Q 85
+ ip address 10.20.1.129 255.255.255.192
+ ip access-group GUEST_FILTER in
+!
+interface GigabitEthernet0/0.99
+ description MAN_MGMT_GW
+ encapsulation dot1Q 99
+ ip address 10.20.99.2 255.255.255.0
+ standby 99 ip 10.20.99.1
+ standby 99 priority 110
+ standby 99 preempt
+!
+interface GigabitEthernet0/0.100
+ description MAN2_WIRED_GW
+ encapsulation dot1Q 100
+ ip address 10.20.2.1 255.255.255.192
+!
+interface GigabitEthernet0/0.110
+ description MAN2_WIFI_GW
+ encapsulation dot1Q 110
+ ip address 10.20.2.65 255.255.255.192
+!
+interface GigabitEthernet0/0.115
+ description MAN2_GUEST_GW
+ encapsulation dot1Q 115
+ ip address 10.20.2.129 255.255.255.192
+ ip access-group GUEST_FILTER in
+!
+interface GigabitEthernet0/0.130
+ description FACT_WIRED_GW
+ encapsulation dot1Q 130
+ ip address 10.20.3.1 255.255.255.192
+!
+interface GigabitEthernet0/0.140
+ description FACT_WIFI_GW
+ encapsulation dot1Q 140
+ ip address 10.20.3.65 255.255.255.192
+!
+interface GigabitEthernet0/0.220
+ description MAN_SERVER_GW
+ encapsulation dot1Q 220
+ ip address 10.20.220.1 255.255.255.0
+!
+interface GigabitEthernet0/1
+ description unused port
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/0/0
+ description unused port shutdown
+ ip address 10.255.255.2 255.255.255.252
+!
+interface Serial0/0/1
+ description unused port shutdown
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Vlan1
+ description unused port shutdown
+ no ip address
+ shutdown
+!
+router rip
+ version 2
+ passive-interface GigabitEthernet0/0
+ network 10.0.0.0
+ no auto-summary
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+ip access-list extended GUEST_FILTER
+ deny ip any 10.10.99.0 0.0.0.255
+ deny ip any 10.20.99.0 0.0.0.255
+ deny ip any 10.10.210.0 0.0.0.255
+ deny ip any 10.20.220.0 0.0.0.255
+ permit ip any any
+ip access-list standard MGMT_SSH_ONLY
+ permit 10.20.99.0 0.0.0.255
+ deny any
+!
+banner motd ^Unauthorised access prohibited^
+!
+!
+!
+!
+line con 0
+ exec-timeout 1000 0
+ password 7 08[REDACTED]
+ logging synchronous
+ login
+!
+line aux 0
+!
+line vty 0 4
+ access-class MGMT_SSH_ONLY in
+ exec-timeout 60 0
+ login local
+ transport input ssh
+!
+!
+!
+end
