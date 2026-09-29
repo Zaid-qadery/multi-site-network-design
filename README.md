@@ -26,7 +26,7 @@ I'm working towards a SOC analyst role, and alerts only make sense when you unde
 More detail:
 
 - [IP addressing plan](docs/addressing-plan.md)
-- [Security setup](docs/security.md)
+- [Security setup](docs/security-setup.md)
 - [Tests](docs/testing.md)
 - [Running configs for every router and switch](configs/)
 
