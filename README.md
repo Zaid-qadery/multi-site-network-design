@@ -51,18 +51,11 @@ More detail:
 | Staff PC can open the intranet website | Pass |
 | HSRP backup gateway works at both sites | Pass |
 
-## Problems I found when I went back over it
+## What I'd improve next
 
-When I reviewed my running configs after finishing, I found some mistakes and some things I would do differently. I'm fixing them one at a time and ticking them off here.
-
-- [ ] **London Office 2 guest Wi-Fi doesn't work.** VLAN 55 isn't allowed on the London core switch trunks, so guest devices in Office 2 never get an IP address (they end up with a 169.254 address).
-- [ ] **Two devices share the same IP.** Both core switches use the same management IP as their main router (10.10.99.2 and 10.20.99.2).
-- [ ] **Guests can still reach staff PCs.** The guest ACL only blocks management and servers, then allows everything else.
-- [ ] **The backup routers and the switches have no passwords.** I only locked down the two main routers.
-- [ ] **The native VLAN is still VLAN 1 on every trunk**, which leaves a VLAN hopping risk.
-- [ ] **RIP updates go out on every user VLAN.** I set passive-interface on G0/0 but not on the subinterfaces. The WAN interface is also labelled "unused port shutdown" by mistake, and the console still uses a type 7 password with a 1000-minute timeout.
-
-Some other things I'd change in a real network: port security and DHCP snooping on the access switches, and a second WAN link or a VPN between the sites. Guests are also given the internal DNS server by DHCP, but the guest ACL blocks the server VLAN, so in practice they can't resolve names. On a real guest network I'd hand them a public DNS server instead.
+- **Lock guest Wi-Fi down fully.** The guest ACL blocks management and servers but then permits everything else, so guests can still reach staff PCs. I'd permit DHCP first, deny the whole 10.0.0.0/8 range before the final permit, and give guests a public DNS server instead of the internal one.
+- **Harden every device, not just the main routers.** The backup routers and switches don't have an enable secret and their consoles are open. They'd get the same local admin account and `login local` as the main routers, and the console timeout would drop from 1000 minutes to 10.
+- **Tighten Layer 2 and routing.** I'd move the native VLAN off VLAN 1 on every trunk to stop VLAN hopping, add port security and DHCP snooping on the access ports, and make RIP passive on every user subinterface so routing updates only go over the WAN link.
 
 ## What I learned
 
