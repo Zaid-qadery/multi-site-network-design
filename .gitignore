@@ -1,8 +1,5 @@
-# macOS
 .DS_Store
 ._*
-
-# Packet Tracer autosave / temp files
 *.pkt.bak
 *~
 packet-tracer/
